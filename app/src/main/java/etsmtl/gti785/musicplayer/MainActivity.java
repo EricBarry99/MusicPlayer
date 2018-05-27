@@ -10,41 +10,49 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.squareup.okhttp.OkHttpClient;
+
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Random;
 
 
-// file selector a faire: quon pourrais utiliser pour selectionner des fichiers par lutilisateur pour la lecture:
-//https://developer.android.com/guide/topics/providers/document-provider
-
 public class MainActivity extends AppCompatActivity {
 
-     TextView textMaxTime;
-     TextView songTitle;
-     TextView textCurrentPosition;
-     Button buttonPause;
-     Button buttonStart;
+    OkHttpClient client = new OkHttpClient();
+    StreamService streamService;
+
+    TextView textMaxTime;
+    TextView songTitle;
+    TextView textCurrentPosition;
+    Button buttonPause;
+    Button buttonStart;
     Button btnRewind;
     Button btnPrevious;
     Button btnForward;
     Button btnNext;
-     Button btnRepeat;
-     Button btnShuffle;
-     SeekBar seekBar;
-     SeekBar volBar;
+    Button btnRepeat;
+    Button btnShuffle;
+    SeekBar seekBar;
+    SeekBar volBar;
 
     ArrayList<String> playList = new ArrayList();
     Handler threadHandler = new Handler();
     MediaPlayer mediaPlayer;
     UpdateSeekBarThread updateSeekBarThread;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        updateSeekBarThread= new UpdateSeekBarThread();
 
+        // service pour les appels au serveur
+        streamService = new StreamService(client, this);
+
+
+        updateSeekBarThread= new UpdateSeekBarThread();
 
         this.textCurrentPosition = (TextView)this.findViewById(R.id.textView_currentPosition);
         this.textMaxTime=(TextView) this.findViewById(R.id.textView_maxTime);
@@ -64,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         this.btnShuffle.setEnabled(false);
 
         this.songTitle = findViewById(R.id.songTitle);
+
 
         // Progress Bar
         this.seekBar= (SeekBar) this.findViewById(R.id.songProgressBar);
@@ -128,7 +137,6 @@ public class MainActivity extends AppCompatActivity {
             threadHandler.postDelayed(this, 50);
         }
     }
-
 
     public void doShuffle(View view) {
         this.updateSeekBarThread= new UpdateSeekBarThread();
@@ -226,8 +234,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // When user click to "Next".
-    public void doNext(View view)  {
-
+    public void doNext(View view) {
+        try {
+            streamService.sendRequest();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // When user click to "Previous".
@@ -244,4 +256,5 @@ public class MainActivity extends AppCompatActivity {
         }
         return playList;
     }
+
 }
