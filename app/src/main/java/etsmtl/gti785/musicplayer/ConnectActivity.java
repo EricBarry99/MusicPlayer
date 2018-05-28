@@ -26,11 +26,12 @@ public class ConnectActivity extends AppCompatActivity{
 
 
     public void doConnect(View view) {
-        startActivity(new Intent(ConnectActivity.this,MainActivity.class));
+
     }
 
     public void doSettings(View view) {
-
+        Intent masterActivity = new Intent(this,ServerConfigActivity.class);
+        startActivity(masterActivity);
     }
 
 }

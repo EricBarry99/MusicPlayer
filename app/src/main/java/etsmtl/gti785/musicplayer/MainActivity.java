@@ -1,5 +1,6 @@
 package etsmtl.gti785.musicplayer;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -152,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
         this.textMaxTime.setText(maxTimeString);
         this.textCurrentPosition.setText("0:00");
         this.seekBar.setProgress(0);
-        this.songTitle.setText(randSongID);
+        this.songTitle.setText("Song title : " + randSongID);
         this.mediaPlayer.start();
     }
 
@@ -161,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
         this.mediaPlayer.start();
         threadHandler.postDelayed(updateSeekBarThread,50);
         this.btnShuffle.setEnabled(true);
-        this.songTitle.setText(playList.get(0));
+        this.songTitle.setText("Song title : " + playList.get(0));
         this.buttonStart.setVisibility(View.GONE);
         this.buttonPause.setVisibility(View.VISIBLE);
     }
@@ -244,6 +245,10 @@ public class MainActivity extends AppCompatActivity {
 
     // When user click to "Previous".
     public void doPrevious(View view)  {
+
+      //  Intent masterActivity = new Intent(this,ConnectActivity.class);
+       // startActivity(masterActivity);
+
 
     }
 
