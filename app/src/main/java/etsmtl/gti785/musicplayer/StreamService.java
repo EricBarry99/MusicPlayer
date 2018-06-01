@@ -1,57 +1,40 @@
 package etsmtl.gti785.musicplayer;
 
-import android.support.annotation.UiThread;
-import android.util.Log;
-
-import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-
-import java.io.IOException;
 
 public class StreamService {
 
 
     OkHttpClient client;
     MainActivity mainActivity;
+    String serverPort = "8765";
+    String serverIp = "192.168.0.111";
+    String httpPrefix = "http://";
+    RequestHandler requestHandler;
 
     public StreamService(OkHttpClient client, MainActivity mainActivity) {
         this.client = client;
         this.mainActivity = mainActivity;
     }
 
+    String getServerAdress() {
+        return httpPrefix + serverIp + ':' + serverPort;
+    }
 
-    void sendRequest() throws IOException {
+    void getNextSong() {
+        try {
+            requestHandler = new RequestHandler(client, mainActivity);
+            requestHandler.execute("/hello", getServerAdress(), "next song");
 
-        // construction de la requete a envoyer
-        Request request = new Request.Builder()
-                .url("192.168.0.105:8765/hello")
-                .build();
-
-        // phase dappel au serveur
-        client.newCall(request).enqueue(new Callback() {
-
-            @Override
-            public void onFailure(Request request, IOException e) {
-                Log.e("ONFAILURE", e.getMessage(), e);
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-
-                final String myResponse = response.body().string();
-                // ici on sera en mesure de faire quelquechose avec la reponse
-
-                mainActivity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mainActivity.songTitle.setText(myResponse);
-                    }
-                });
-
-            }
-        });
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
 }
+
+/*
+@TODO
+Le service a les methodes de travail, il recoit les appels depuis lactivite et fais en sorte de caller le handler avec les bonnes infos pour les requetes
+les resultats sont directement retournés au streamservice qui se chargera de voir quoi faire avec, dans les methodes appelées
+ */

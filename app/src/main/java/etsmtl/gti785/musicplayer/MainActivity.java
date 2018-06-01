@@ -1,5 +1,6 @@
 package etsmtl.gti785.musicplayer;
 
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -11,18 +12,27 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.squareup.okhttp.Call;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Headers;
 import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+import com.squareup.okhttp.ResponseBody;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.stream.Stream;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    OkHttpClient client = new OkHttpClient();
+    OkHttpClient client;
     StreamService streamService;
+    Response response;
+    Context context;
 
     TextView textMaxTime;
     TextView songTitle;
@@ -48,10 +58,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        context = getApplicationContext();
+        client = new OkHttpClient();
 
+
+//        response = new Response();
         // service pour les appels au serveur
-        streamService = new StreamService(client, this);
 
+       streamService = new StreamService(client, this);
 
         updateSeekBarThread= new UpdateSeekBarThread();
 
@@ -235,21 +249,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // When user click to "Next".
-    public void doNext(View view) {
-        try {
-            streamService.sendRequest();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void doNext(View view) throws IOException {
+        streamService.getNextSong();
     }
+
 
     // When user click to "Previous".
     public void doPrevious(View view)  {
 
       //  Intent masterActivity = new Intent(this,ConnectActivity.class);
        // startActivity(masterActivity);
-
-
     }
 
     public ArrayList<String> listElemRaw(){
@@ -261,5 +270,4 @@ public class MainActivity extends AppCompatActivity {
         }
         return playList;
     }
-
 }
