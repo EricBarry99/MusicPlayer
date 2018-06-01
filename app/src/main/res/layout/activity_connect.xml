@@ -15,13 +15,17 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:gravity="right">
-        <ImageView
+
+        <Button
             android:id="@+id/btnSettings"
-            android:layout_width="50dp"
+            android:layout_width="140dp"
             android:layout_height="50dp"
             android:layout_marginTop="20dp"
-            android:onClick="doSettings" 
-            android:src="@drawable/settings"/>
+            android:drawableLeft="@drawable/settings"
+            android:text="Settings"
+            android:textColor="#000"
+            android:onClick="doSettings"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
@@ -33,12 +37,13 @@
         android:orientation="horizontal"
         android:layout_marginTop="200dp"
         android:gravity="center">
+
         <Button
             android:id="@+id/btnConnect"
-            android:layout_width="70dp"
-            android:layout_height="30dp"
-            android:text="Connect"
-            android:onClick="doConnect" />
+            android:layout_width="90dp"
+            android:layout_height="50dp"
+            android:onClick="doConnect"
+            android:text="Connect" />
 
     </LinearLayout>
 

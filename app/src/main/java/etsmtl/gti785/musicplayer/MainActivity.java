@@ -256,9 +256,13 @@ public class MainActivity extends AppCompatActivity {
 
     // When user click to "Previous".
     public void doPrevious(View view)  {
+       // streamService.getPreviousSong();
+    }
 
-      //  Intent masterActivity = new Intent(this,ConnectActivity.class);
-       // startActivity(masterActivity);
+    // When user click to "Previous".
+    public void doReturn(View view)  {
+        Intent masterActivity = new Intent(this,ConnectActivity.class);
+        startActivity(masterActivity);
     }
 
     public ArrayList<String> listElemRaw(){

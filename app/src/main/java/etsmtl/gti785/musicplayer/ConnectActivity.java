@@ -10,7 +10,6 @@ import android.widget.Button;
 
 public class ConnectActivity extends AppCompatActivity{
 
-
     Button btnConnect;
     Button btnSettings;
 
@@ -26,7 +25,10 @@ public class ConnectActivity extends AppCompatActivity{
 
 
     public void doConnect(View view) {
-
+        // lance la connexion au server
+        // if reussi
+        Intent masterActivity = new Intent(this,MainActivity.class);
+        startActivity(masterActivity);
     }
 
     public void doSettings(View view) {
