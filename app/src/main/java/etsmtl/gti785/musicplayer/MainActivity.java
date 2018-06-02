@@ -34,25 +34,15 @@ public class MainActivity extends AppCompatActivity {
     Response response;
     Context context;
 
-    TextView textMaxTime;
-    TextView songTitle;
-    TextView textCurrentPosition;
-    Button buttonPause;
-    Button buttonStart;
-    Button btnRewind;
-    Button btnPrevious;
-    Button btnForward;
-    Button btnNext;
-    Button btnRepeat;
-    Button btnShuffle;
-    SeekBar seekBar;
-    SeekBar volBar;
+    TextView textMaxTime, songTitle, textCurrentPosition;
+    Button buttonPause, buttonStart, btnRewind, btnPrevious,btnForward, btnNext, btnRepeat,btnShuffle;
+    SeekBar seekBar,volBar;
 
     ArrayList<String> playList = new ArrayList();
     Handler threadHandler = new Handler();
     MediaPlayer mediaPlayer;
     UpdateSeekBarThread updateSeekBarThread;
-
+    String appStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,33 +51,27 @@ public class MainActivity extends AppCompatActivity {
         context = getApplicationContext();
         client = new OkHttpClient();
 
-
+        Bundle bundle = getIntent().getExtras();
+        appStatus = bundle.getString("APPSTATUS");
 //        response = new Response();
         // service pour les appels au serveur
 
-       streamService = new StreamService(client, this);
+        streamService = new StreamService(client, this);
 
         updateSeekBarThread= new UpdateSeekBarThread();
-
+        this.songTitle = findViewById(R.id.songTitle);
         this.textCurrentPosition = (TextView)this.findViewById(R.id.textView_currentPosition);
         this.textMaxTime=(TextView) this.findViewById(R.id.textView_maxTime);
-
         this.buttonStart= (Button) this.findViewById(R.id.btnPlay);
         this.buttonPause= (Button) this.findViewById(R.id.btnPause);
         this.buttonPause.setVisibility(View.GONE);
-
         this.btnForward= (Button) this.findViewById(R.id.btnForward);
         this.btnRewind= (Button) this.findViewById(R.id.btnRewind);
-
         this.btnNext= (Button) this.findViewById(R.id.btnNext);
         this.btnPrevious= (Button) this.findViewById(R.id.btnPrevious);
-
         this.btnRepeat= (Button) this.findViewById(R.id.btnRepeat);
         this.btnShuffle= (Button) this.findViewById(R.id.btnShuffle);
         this.btnShuffle.setEnabled(false);
-
-        this.songTitle = findViewById(R.id.songTitle);
-
 
         // Progress Bar
         this.seekBar= (SeekBar) this.findViewById(R.id.songProgressBar);
@@ -261,8 +245,11 @@ public class MainActivity extends AppCompatActivity {
 
     // When user click to "Previous".
     public void doReturn(View view)  {
-        Intent masterActivity = new Intent(this,ConnectActivity.class);
-        startActivity(masterActivity);
+        Intent i = new Intent(this, ConnectActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("APPSTATUS", appStatus);
+        i.putExtras(bundle);
+        startActivity(i);
     }
 
     public ArrayList<String> listElemRaw(){

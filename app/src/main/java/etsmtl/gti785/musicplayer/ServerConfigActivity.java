@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,10 +12,8 @@ import android.widget.EditText;
 
 public class ServerConfigActivity extends AppCompatActivity {
 
-    EditText ipbox;
-    EditText portbox;
-    Button btnCancel;
-    Button btnApply;
+    EditText ipbox, portbox;
+    Button btnCancel, btnApply;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,14 +28,15 @@ public class ServerConfigActivity extends AppCompatActivity {
     }
 
     public void doCancel(View view) {
-        Intent masterActivity = new Intent(this,ConnectActivity.class);
-        startActivity(masterActivity);
+        Intent ConnectActivity = new Intent(this,ConnectActivity.class);
+        startActivity(ConnectActivity);
     }
 
     public void doApply(View view) {
+      //  String ip = String.valueOf(ipbox.getText());
+       // String port = String.valueOf(portbox.getText());
 
-
-        //Intent masterActivity = new Intent(this,ServerConfigActivity.class);
-        //startActivity(masterActivity);
+       // Intent ConnectActivity = new Intent(this,ConnectActivity.class);
+       // startActivity(ConnectActivity);
     }
 }

@@ -16,12 +16,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity"
-            android:label="Connexion"
-            android:theme="@style/AppTheme"/>
+            android:label="Connect to Server"
+            android:theme="@style/AppTheme" />
 
         <activity android:name=".ServerConfigActivity"
-            android:label="Config"
-            android:theme="@style/AppTheme"/>
+            android:label="Server Configuration"
+            android:theme="@style/AppTheme" />
 
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
