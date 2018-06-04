@@ -15,6 +15,7 @@ public class ConnectActivity extends AppCompatActivity{
     Button btnConnect, btnSettings;
 
     String AppStatus;
+    String IP,PORT;
 
     public boolean AppConnectionStatus;
 
@@ -29,18 +30,24 @@ public class ConnectActivity extends AppCompatActivity{
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
          AppStatus = bundle.getString("APPSTATUS");
-           if(AppStatus == "true"){
-               AppConnectionStatus= false;
+            AppConnectionStatus =  Boolean.valueOf(AppStatus);
+           if(!AppConnectionStatus){
                this.btnConnect.setText("Connect");
                this.btnConnect.setCompoundDrawablesWithIntrinsicBounds(R.drawable.connect, 0, 0, 0);
                this.btnConnect.setBackgroundColor(getResources().getColor(R.color.colorbtngreen));
 
            }else{
-               AppConnectionStatus= true;
                this.btnConnect.setText("Disconnect");
                this.btnConnect.setBackgroundColor(getResources().getColor(R.color.colorbtnred));
                this.btnConnect.setCompoundDrawablesWithIntrinsicBounds(R.drawable.disconnect, 0, 0, 0);
            }
+            if(bundle.getString("IPADRESS") != "" && bundle.getString("IPADRESS") != null &&
+                    bundle.getString("PORTADRESS") != "" && bundle.getString("PORTADRESS") != null){
+                Log.d("IP :", bundle.getString("IPADRESS"));
+                Log.d("PORT : ",bundle.getString("PORTADRESS"));
+                IP = bundle.getString("IPADRESS");
+                PORT = bundle.getString("PORTADRESS");
+            }
         }
     }
 
@@ -70,6 +77,12 @@ public class ConnectActivity extends AppCompatActivity{
 
     public void doSettings(View view) {
         Intent serverActivity = new Intent(this,ServerConfigActivity.class);
+        if(IP != "" && IP != null && PORT != "" && PORT != null){
+            Bundle bundle = new Bundle();
+            bundle.putString("IPADRESS", IP);
+            bundle.putString("PORTADRESS", PORT);
+            serverActivity.putExtras(bundle);
+        }
         startActivity(serverActivity);
     }
 
