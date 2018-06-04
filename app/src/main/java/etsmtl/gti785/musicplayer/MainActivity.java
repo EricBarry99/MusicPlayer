@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     Handler threadHandler = new Handler();
     MediaPlayer mediaPlayer;
     UpdateSeekBarThread updateSeekBarThread;
-    String appStatus;
+    String IP,PORT;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +53,11 @@ public class MainActivity extends AppCompatActivity {
         client = new OkHttpClient();
 
         Bundle bundle = getIntent().getExtras();
-        appStatus = bundle.getString("APPSTATUS");
+        if(bundle != null){
+            IP = bundle.getString("IPADRESS");
+            PORT = bundle.getString("PORTADRESS");
+        }
+
 //        response = new Response();
         // service pour les appels au serveur
 
@@ -247,9 +252,17 @@ public class MainActivity extends AppCompatActivity {
     public void doReturn(View view)  {
         Intent i = new Intent(this, ConnectActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("APPSTATUS", appStatus);
+        bundle.putString("IPADRESS", IP);
+        bundle.putString("PORTADRESS", PORT);
         i.putExtras(bundle);
         startActivity(i);
+
+        Context context = getApplicationContext();
+        int duration = Toast.LENGTH_SHORT;
+        CharSequence text;
+        text = "DISCONNECTED FROM SERVER";
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 
     public ArrayList<String> listElemRaw(){

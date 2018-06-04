@@ -76,9 +76,9 @@ public class ServerConfigActivity extends AppCompatActivity {
         int duration = Toast.LENGTH_SHORT;
         CharSequence text;
 
-        if (MASTERIP != "" && MASTERIP != null && MASTERPORT != "" && MASTERPORT != null) {
+        if (!MASTERIP.isEmpty() && !MASTERPORT.isEmpty()) {
             if (ipValidator(MASTERIP) && portValidator(MASTERPORT)) {
-                text = "ALL GOOD!";
+                text = "ALL GOOD, READY TO CONNECT";
                 Intent ConnectActivity = new Intent(this,ConnectActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("IPADRESS", MASTERIP);
