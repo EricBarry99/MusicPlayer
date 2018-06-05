@@ -1,5 +1,6 @@
 package etsmtl.gti785.musicplayer;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     MediaPlayer mediaPlayer;
     UpdateSeekBarThread updateSeekBarThread;
     String IP,PORT;
+    ProgressDialog progDailog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,6 +170,11 @@ public class MainActivity extends AppCompatActivity {
         this.songTitle.setText("Song title : " + playList.get(0));
         this.buttonStart.setVisibility(View.GONE);
         this.buttonPause.setVisibility(View.VISIBLE);
+
+        //https://stackoverflow.com/questions/5859702/android-loading-animation-before-videoview-start
+       //  progDailog = ProgressDialog.show(this, "Please wait ...", "Retrieving data ...", true);
+        // TO STOP
+        //progDailog.dismiss();
     }
 
 
