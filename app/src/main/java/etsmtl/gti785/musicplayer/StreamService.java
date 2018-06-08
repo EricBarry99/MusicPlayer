@@ -21,7 +21,6 @@ public class StreamService {
         return httpPrefix + serverIp + ':' + serverPort;
     }
 
-
     void getNextSong() {
         try {
             requestHandler = new RequestHandler(client, mainActivity);
@@ -31,5 +30,4 @@ public class StreamService {
             System.out.println(e.getMessage());
         }
     }
-
 }
