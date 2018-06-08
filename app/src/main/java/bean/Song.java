@@ -7,14 +7,17 @@ public class Song {
     public String title;
     public String artist;
     public String album;
-    public byte[] albumArt;
+    public String albumArt;
     public String duration;
     public String path;
 
     public Song() {
     }
 
-    public Song(String title, String artist, String album, byte[] albumArt, String duration, String path) {
+    public Song(String title, String artist, String album, String albumArt, String duration, String path) {
+
+//        byte[] albumArtByteArray = albumArt.getBytes();
+
         this.title = title;
         this.artist = artist;
         this.album = album;
@@ -48,11 +51,11 @@ public class Song {
         this.album = album;
     }
 
-    public byte[] getAlbumArt() {
+    public String getAlbumArt() {
         return albumArt;
     }
 
-    public void setAlbumArt(byte[] albumArt) {
+    public void setAlbumArt(String albumArt) {
         this.albumArt = albumArt;
     }
 
