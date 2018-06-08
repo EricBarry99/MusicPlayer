@@ -36,7 +36,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:orientation="horizontal"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="180dp"
         android:gravity="center">
 
 
@@ -53,7 +53,5 @@
             android:textStyle="bold" />
 
     </LinearLayout>
-
-
 
 </android.widget.RelativeLayout>

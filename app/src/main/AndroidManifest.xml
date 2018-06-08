@@ -9,19 +9,33 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ConnectActivity">
+
+        <activity
+            android:name=".SplashScreen"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"
+
+
+        <activity android:name=".ConnectActivity"
             android:label="Connect to Server"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            />
+
+        <activity android:name=".MainActivity"
+            android:label="MediaPlayer"
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait"/>
 
         <activity android:name=".ServerConfigActivity"
             android:label="Server Configuration"
             android:theme="@style/AppTheme" />
+
+
 
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
