@@ -2,13 +2,13 @@ package etsmtl.gti785.musicplayer;
 
 import com.squareup.okhttp.OkHttpClient;
 
-public class StreamService {
 
+public class StreamService {
 
     OkHttpClient client;
     MainActivity mainActivity;
     String serverPort = "8765";
-    String serverIp = "192.168.0.111";
+    String serverIp = "192.168.0.103";
     String httpPrefix = "http://";
     RequestHandler requestHandler;
 
@@ -21,10 +21,11 @@ public class StreamService {
         return httpPrefix + serverIp + ':' + serverPort;
     }
 
+
     void getNextSong() {
         try {
             requestHandler = new RequestHandler(client, mainActivity);
-            requestHandler.execute("/hello", getServerAdress(), "next song");
+            requestHandler.execute("/play", getServerAdress(), "next_song");
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -32,9 +33,3 @@ public class StreamService {
     }
 
 }
-
-/*
-@TODO
-Le service a les methodes de travail, il recoit les appels depuis lactivite et fais en sorte de caller le handler avec les bonnes infos pour les requetes
-les resultats sont directement retournés au streamservice qui se chargera de voir quoi faire avec, dans les methodes appelées
- */
