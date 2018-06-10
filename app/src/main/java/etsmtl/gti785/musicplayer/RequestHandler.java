@@ -27,45 +27,27 @@ public class RequestHandler extends AsyncTask<String, Void, JsonObject> {
     }
 
     @Override
-    // 0 request, 1 adress, 2 operation
+    // 0 request, 1 address, 2 operation
     protected JsonObject doInBackground(String... objects) {
 
-        String operation = objects[0].toString();
-        String adress = objects[1].toString();
-        String currentSong = objects[2].toString();
-
         Response response = null;
-        Request request;
+        JsonObject jsonObject = new JsonObject();
 
-//        Request request = createRequest();
-
-        if(currentSong == ""){
-            request = new Request.Builder()
-                    .url(adress + '/' + operation+"?"+"testing=yes")
-                    .build();
-        }
-        else{
-            request = new Request.Builder()
-                    .url(adress + '/' + operation+"?" + "song="+currentSong)
-                    .build();
-        }
+        String operation = objects[0].toString();
+        String address = objects[1].toString();
+        String currentSong = objects[2].toString();
+        Request request = createRequest(operation, address, currentSong);
 
         try {
             response = client.newCall(request).execute();
 
             if(response != null && response.isSuccessful()){
-
-                // source: https://stackoaptuverflow.com/questions/28221555/how-does-okhttp-get-json-string
-                //https://stackoverflow.com/questions/28405545/strange-namevaluepairs-key-appear-when-using-gson?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
-                String jsonData = response.body().string();
-
-                JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("song", jsonData);
-                jsonObject.addProperty("operation", operation);
-                jsonObject.addProperty("adress", adress);
-
-                return jsonObject;
+                jsonObject = createJsonObjectFromResponse(response, operation, address);
+                if(jsonObject != null){
+                    return jsonObject;
+                }
             }
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
@@ -78,7 +60,7 @@ public class RequestHandler extends AsyncTask<String, Void, JsonObject> {
         if(response != null){
             try{
                 String operation = response.get("operation").getAsString();
-                String adress = response.get("adress").getAsString();
+                String address = response.get("address").getAsString();
                 Song song = jsonDecode(response.get("song"));
 
                 // set current song for the next time we make a request
@@ -88,9 +70,10 @@ public class RequestHandler extends AsyncTask<String, Void, JsonObject> {
                 // operations de controle du player
                 if(song != null){
                     if(operation == "initPlayer"){
+
                         mainActivity.songTitle.setText(song.getTitle());
 
-                        String songUri = "file://" + adress+"/raw/"+song.path+".mp3";
+                        String songUri = "file://" + address+"/raw/"+song.path+".mp3";
                         Uri myUri = Uri.parse(songUri);
 
                         mainActivity.mediaPlayer = null;
@@ -140,5 +123,42 @@ public class RequestHandler extends AsyncTask<String, Void, JsonObject> {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    public Request createRequest(String operation, String address, String currentSong){
+
+        Request request;
+
+        if(currentSong == ""){
+            request = new Request.Builder()
+                    .url(address + '/' + operation+"?"+"testing=yes")
+                    .build();
+        }
+        else{
+            request = new Request.Builder()
+                    .url(address + '/' + operation+"?" + "song="+currentSong)
+                    .build();
+        }
+        return request;
+    }
+
+
+    public JsonObject createJsonObjectFromResponse(Response response, String operation, String address){
+        // source: https://stackoaptuverflow.com/questions/28221555/how-does-okhttp-get-json-string
+        //https://stackoverflow.com/questions/28405545/strange-namevaluepairs-key-appear-when-using-gson?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+       try{
+           String jsonData = response.body().string();
+
+           JsonObject jsonObject = new JsonObject();
+           jsonObject.addProperty("song", jsonData);
+           jsonObject.addProperty("operation", operation);
+           jsonObject.addProperty("address", address);
+
+           return jsonObject;
+       }catch(Exception e){
+           e.printStackTrace();
+       }
+       return null;
     }
 }
