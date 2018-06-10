@@ -47,7 +47,6 @@ public class RequestHandler extends AsyncTask<String, Void, JsonObject> {
                     return jsonObject;
                 }
             }
-
         } catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
@@ -71,38 +70,17 @@ public class RequestHandler extends AsyncTask<String, Void, JsonObject> {
                 if(song != null){
                     if(operation == "initPlayer"){
 
-                        mainActivity.songTitle.setText(song.getTitle());
-
-                        String songUri = "file://" + address+"/raw/"+song.path+".mp3";
-                        Uri myUri = Uri.parse(songUri);
-
-                        mainActivity.mediaPlayer = null;
-                        mainActivity.mediaPlayer = new MediaPlayer();
-                        mainActivity.mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                        mainActivity.mediaPlayer.setDataSource(mainActivity, myUri);
-                        mainActivity.mediaPlayer.prepare();
-
-                        int duration = mainActivity.mediaPlayer.getDuration();
-                        mainActivity.seekBar.setMax(duration);
-                        String maxTimeString = mainActivity.createTimeLabel(duration);
-                        mainActivity.textCurrentPosition.setText("0:00");
-
-                        mainActivity.textMaxTime.setText(Integer.parseInt(song.getDuration()) / 100);
-//                        mainActivity.textMaxTime.setText(maxTimeString);
-
-                        mainActivity.mediaPlayer.seekTo(0);
-                        mainActivity.mediaPlayer.setLooping(false); // par défaut
-                        mainActivity.mediaPlayer.setVolume(0.5f, 0.5f);
+                        initPlayer(address, song);
 
                     }
                     else if (operation == "nextSong"){
-
+                        setNextSong();
                     }
                     else if (operation == "previousSong"){
-
+                        setPreviousSong();
                     }
                     else if (operation == "shuffleSong"){
-
+                        shuffleNextSong();
                     }
                 }
             }catch(Exception e){
@@ -125,7 +103,6 @@ public class RequestHandler extends AsyncTask<String, Void, JsonObject> {
         return null;
     }
 
-
     public Request createRequest(String operation, String address, String currentSong){
 
         Request request;
@@ -147,18 +124,73 @@ public class RequestHandler extends AsyncTask<String, Void, JsonObject> {
     public JsonObject createJsonObjectFromResponse(Response response, String operation, String address){
         // source: https://stackoaptuverflow.com/questions/28221555/how-does-okhttp-get-json-string
         //https://stackoverflow.com/questions/28405545/strange-namevaluepairs-key-appear-when-using-gson?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
-       try{
-           String jsonData = response.body().string();
+        try{
+            String jsonData = response.body().string();
 
-           JsonObject jsonObject = new JsonObject();
-           jsonObject.addProperty("song", jsonData);
-           jsonObject.addProperty("operation", operation);
-           jsonObject.addProperty("address", address);
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("song", jsonData);
+            jsonObject.addProperty("operation", operation);
+            jsonObject.addProperty("address", address);
 
-           return jsonObject;
-       }catch(Exception e){
-           e.printStackTrace();
-       }
-       return null;
+            return jsonObject;
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
+
+
+    public void initPlayer(String address, Song song){
+        try{
+            mainActivity.songTitle.setText(song.getTitle());
+
+    //       String songUri = "file://" + address+"/raw/"+song.path+".mp3";
+            String songUri = address+"/raw/"+song.path;
+//            String songUri = address+"/raw/"+song.path+".mp3";
+            Uri myUri = Uri.parse(songUri);
+
+            mainActivity.mediaPlayer = null;
+            mainActivity.mediaPlayer = new MediaPlayer();
+            mainActivity.mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            // mainActivity.mediaPlayer = MediaPlayer.create(mainActivity.context(), myUri);
+
+            // faire un contentprovider pour gérer l'URL ?
+//            ContentProvider contentProvider =
+
+            mainActivity.mediaPlayer.setDataSource(mainActivity.context, myUri);
+            mainActivity.mediaPlayer.prepare();
+
+            int duration = mainActivity.mediaPlayer.getDuration();
+            mainActivity.seekBar.setMax(duration);
+            String maxTimeString = mainActivity.createTimeLabel(duration);
+            mainActivity.textCurrentPosition.setText("0:00");
+
+            mainActivity.textMaxTime.setText(Integer.parseInt(song.getDuration()) / 100);
+    //       mainActivity.textMaxTime.setText(maxTimeString);
+
+            mainActivity.mediaPlayer.seekTo(0);
+            mainActivity.mediaPlayer.setLooping(false); // par défaut
+            mainActivity.mediaPlayer.setVolume(0.5f, 0.5f);
+
+            mainActivity.mediaPlayer.start();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+    public void setNextSong(){
+
+    }
+
+
+    public void setPreviousSong(){
+
+    }
+
+
+    public void shuffleNextSong(){
+
+    }
+
 }

@@ -7,26 +7,18 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.squareup.okhttp.Call;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Headers;
 import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.stream.Stream;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -60,9 +52,6 @@ public class MainActivity extends AppCompatActivity {
             PORT = bundle.getString("PORTADRESS");
         }
 
-//        response = new Response();
-        // service pour les appels au serveur
-
         streamService = new StreamService(client, this);
 
         updateSeekBarThread= new UpdateSeekBarThread();
@@ -84,37 +73,37 @@ public class MainActivity extends AppCompatActivity {
         this.seekBar= (SeekBar) this.findViewById(R.id.songProgressBar);
         this.seekBar.setClickable(true);
         seekBar.setOnSeekBarChangeListener(
-                new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        if (fromUser) {
-                            mediaPlayer.seekTo(progress);
-                            seekBar.setProgress(progress);
-                        }
+            new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    if (fromUser) {
+                        mediaPlayer.seekTo(progress);
+                        seekBar.setProgress(progress);
                     }
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {}
-
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {}
                 }
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {}
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {}
+            }
         );
         // Volume Bar
         volBar = (SeekBar) findViewById(R.id.volumeBar);
         this.volBar.setClickable(true);
         volBar.setOnSeekBarChangeListener(
-                new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        float volumeNum = progress / 100f;
-                        mediaPlayer.setVolume(volumeNum, volumeNum);
-                    }
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {}
-
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {}
+            new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    float volumeNum = progress / 100f;
+                    mediaPlayer.setVolume(volumeNum, volumeNum);
                 }
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {}
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {}
+            }
         );
 //        this.playList = listElemRaw();
 
@@ -187,7 +176,6 @@ public class MainActivity extends AppCompatActivity {
         // TO STOP
         //progDailog.dismiss();
     }
-
 
     // pour remplacer la fonction douteuse originale
     public String createTimeLabel(int time) {
@@ -268,35 +256,5 @@ public class MainActivity extends AppCompatActivity {
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
     }
-//
-//    public ArrayList<String> listElemRaw(){
-//        Field[] fields=R.raw.class.getFields();
-//        for(int count=0; count < fields.length; count++){
-//            Log.d("Raw Asset: ", fields[count].getName());
-//            String field = fields[count].getName();
-//            playList.add(field);
-//        }
-//        return playList;
-//    }
 
-
-    /*
-    // unused: @TODO: cleanup maybe ??
-
-
-
-    // retourne un path, si on envoie getPathWithSondId(songId)
-    private String getPathWithSondId(String rand){
-        String output = this.getResources().getResourceName(Integer.valueOf((rand)));
-        return output;
-    }
-
-    // Find ID of resource in 'raw' folder.
-    public int getRawResIdByName(String resName)  {
-        String pkgName = this.getPackageName();
-        // Return 0 if not found.
-        int resID = this.getResources().getIdentifier(resName, "raw", pkgName);
-        return resID;
-    }
-    */
 }

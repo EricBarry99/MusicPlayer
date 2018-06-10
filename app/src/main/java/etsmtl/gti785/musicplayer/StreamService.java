@@ -1,7 +1,5 @@
 package etsmtl.gti785.musicplayer;
 
-import android.media.MediaMetadataRetriever;
-
 import com.squareup.okhttp.OkHttpClient;
 
 

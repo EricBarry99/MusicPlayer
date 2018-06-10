@@ -35,9 +35,9 @@
             android:label="Server Configuration"
             android:theme="@style/AppTheme" />
 
-
-
     </application>
+
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
 </manifest>
