@@ -1,6 +1,10 @@
 package etsmtl.gti785.musicplayer;
 
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -23,33 +27,42 @@ public class RequestHandler extends AsyncTask<String, Void, JsonObject> {
     }
 
     @Override
-    // 0 request, 1 adress, 2 caller
+    // 0 request, 1 adress, 2 operation
     protected JsonObject doInBackground(String... objects) {
 
-        String param = objects[0].toString();
+        String operation = objects[0].toString();
         String adress = objects[1].toString();
-        String caller = objects[2].toString();
+        String currentSong = objects[2].toString();
 
-        Request request = new Request.Builder()
-                .url(adress + param)
-                .build();
         Response response = null;
+        Request request;
+
+//        Request request = createRequest();
+
+        if(currentSong == ""){
+            request = new Request.Builder()
+                    .url(adress + '/' + operation+"?"+"testing=yes")
+                    .build();
+        }
+        else{
+            request = new Request.Builder()
+                    .url(adress + '/' + operation+"?" + "song="+currentSong)
+                    .build();
+        }
 
         try {
             response = client.newCall(request).execute();
 
-            if(response != null){
+            if(response != null && response.isSuccessful()){
 
                 // source: https://stackoaptuverflow.com/questions/28221555/how-does-okhttp-get-json-string
                 //https://stackoverflow.com/questions/28405545/strange-namevaluepairs-key-appear-when-using-gson?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
-
                 String jsonData = response.body().string();
-                int size = jsonData.length();
-                jsonData = jsonData.substring(18, size-1);
 
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("song", jsonData);
-                jsonObject.addProperty("caller", caller);
+                jsonObject.addProperty("operation", operation);
+                jsonObject.addProperty("adress", adress);
 
                 return jsonObject;
             }
@@ -60,25 +73,61 @@ public class RequestHandler extends AsyncTask<String, Void, JsonObject> {
         return null;
     }
 
-
     public void onPostExecute(JsonObject response){
 
-        try{
-            String caller = response.get("caller").getAsString();
-            Song song = jsonDecode(response.get("song"));
+        if(response != null){
+            try{
+                String operation = response.get("operation").getAsString();
+                String adress = response.get("adress").getAsString();
+                Song song = jsonDecode(response.get("song"));
 
-            // http.192.168.../raw/songname
-            // operations de controle du player
-            if(song != null){
-                if(caller == "next_song"){
-                    mainActivity.songTitle.setText(song.getTitle());
-//                    mainActivity.mediaPlayer.setDataSource(song.getPath());
+                // set current song for the next time we make a request
+                mainActivity.streamService.setCurrentSong(song.getTitle());
+
+                // http.192.168.../raw/songname
+                // operations de controle du player
+                if(song != null){
+                    if(operation == "initPlayer"){
+                        mainActivity.songTitle.setText(song.getTitle());
+
+                        String songUri = "file://" + adress+"/raw/"+song.path+".mp3";
+                        Uri myUri = Uri.parse(songUri);
+
+                        mainActivity.mediaPlayer = null;
+                        mainActivity.mediaPlayer = new MediaPlayer();
+                        mainActivity.mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                        mainActivity.mediaPlayer.setDataSource(mainActivity, myUri);
+                        mainActivity.mediaPlayer.prepare();
+
+                        int duration = mainActivity.mediaPlayer.getDuration();
+                        mainActivity.seekBar.setMax(duration);
+                        String maxTimeString = mainActivity.createTimeLabel(duration);
+                        mainActivity.textCurrentPosition.setText("0:00");
+
+                        mainActivity.textMaxTime.setText(Integer.parseInt(song.getDuration()) / 100);
+//                        mainActivity.textMaxTime.setText(maxTimeString);
+
+                        mainActivity.mediaPlayer.seekTo(0);
+                        mainActivity.mediaPlayer.setLooping(false); // par défaut
+                        mainActivity.mediaPlayer.setVolume(0.5f, 0.5f);
+
+                    }
+                    else if (operation == "nextSong"){
+
+                    }
+                    else if (operation == "previousSong"){
+
+                    }
+                    else if (operation == "shuffleSong"){
+
+                    }
                 }
-                else if (caller == "play"){
-                }
+            }catch(Exception e){
+                e.printStackTrace();
             }
-        }catch(Exception e){
-            e.printStackTrace();
+        }
+        else{
+            Toast.makeText(mainActivity.getBaseContext(),"Query Failed",Toast.LENGTH_SHORT).show();
         }
     }
 

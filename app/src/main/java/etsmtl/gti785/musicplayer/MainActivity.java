@@ -116,12 +116,18 @@ public class MainActivity extends AppCompatActivity {
                     public void onStopTrackingTouch(SeekBar seekBar) {}
                 }
         );
-        this.playList = listElemRaw();
+//        this.playList = listElemRaw();
 
-        // ici le player est dans l'éetat prepared apres la methode create
-        // on get la premiere chanson par defaut
-        int resID = getResources().getIdentifier(this.playList.get(0), "raw", getPackageName());
-        this.mediaPlayer =  MediaPlayer.create(this, resID);
+        // @TODO: init player
+        streamService.initPlayer();
+
+//
+//        // ici le player est dans l'éetat prepared apres la methode create
+//        // on get la premiere chanson par defaut
+//        int resID = getResources().getIdentifier(this.playList.get(0), "raw", getPackageName());
+//        this.mediaPlayer =  MediaPlayer.create(this, resID);
+//
+/*
         int duration = this.mediaPlayer.getDuration();
         this.seekBar.setMax(duration);
         String maxTimeString = this.createTimeLabel(duration);
@@ -130,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
         this.mediaPlayer.seekTo(0);
         this.mediaPlayer.setLooping(false); // par défaut
         this.mediaPlayer.setVolume(0.5f, 0.5f);
+        */
     }
 
     // Thread to Update position for SeekBar.
@@ -160,14 +167,18 @@ public class MainActivity extends AppCompatActivity {
         this.seekBar.setProgress(0);
         this.songTitle.setText("Song title : " + randSongID);
         this.mediaPlayer.start();
+
+
+        streamService.shuffle();
     }
 
     // Fonction executer sur btn PLAY
     public void doStart(View view)  {
-        this.mediaPlayer.start();
+
+       this.mediaPlayer.start();
         threadHandler.postDelayed(updateSeekBarThread,50);
         this.btnShuffle.setEnabled(true);
-        this.songTitle.setText("Song title : " + playList.get(0));
+//        this.songTitle.setText("Song title : " + playList.get(0));
         this.buttonStart.setVisibility(View.GONE);
         this.buttonPause.setVisibility(View.VISIBLE);
 
@@ -178,19 +189,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // retourne un path, si on envoie getPathWithSondId(songId)
-    private String getPathWithSondId(String rand){
-        String output = this.getResources().getResourceName(Integer.valueOf((rand)));
-        return output;
-    }
-
-    // Find ID of resource in 'raw' folder.
-    public int getRawResIdByName(String resName)  {
-        String pkgName = this.getPackageName();
-        // Return 0 if not found.
-        int resID = this.getResources().getIdentifier(resName, "raw", pkgName);
-        return resID;
-    }
     // pour remplacer la fonction douteuse originale
     public String createTimeLabel(int time) {
         String timeLabel = "";
@@ -249,10 +247,9 @@ public class MainActivity extends AppCompatActivity {
         streamService.getNextSong();
     }
 
-
     // When user click to "Previous".
     public void doPrevious(View view)  {
-       // streamService.getPreviousSong();
+       streamService.getPreviousSong();
     }
 
     // When user click to "Previous".
@@ -271,14 +268,35 @@ public class MainActivity extends AppCompatActivity {
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
     }
+//
+//    public ArrayList<String> listElemRaw(){
+//        Field[] fields=R.raw.class.getFields();
+//        for(int count=0; count < fields.length; count++){
+//            Log.d("Raw Asset: ", fields[count].getName());
+//            String field = fields[count].getName();
+//            playList.add(field);
+//        }
+//        return playList;
+//    }
 
-    public ArrayList<String> listElemRaw(){
-        Field[] fields=R.raw.class.getFields();
-        for(int count=0; count < fields.length; count++){
-            Log.d("Raw Asset: ", fields[count].getName());
-            String field = fields[count].getName();
-            playList.add(field);
-        }
-        return playList;
+
+    /*
+    // unused: @TODO: cleanup maybe ??
+
+
+
+    // retourne un path, si on envoie getPathWithSondId(songId)
+    private String getPathWithSondId(String rand){
+        String output = this.getResources().getResourceName(Integer.valueOf((rand)));
+        return output;
     }
+
+    // Find ID of resource in 'raw' folder.
+    public int getRawResIdByName(String resName)  {
+        String pkgName = this.getPackageName();
+        // Return 0 if not found.
+        int resID = this.getResources().getIdentifier(resName, "raw", pkgName);
+        return resID;
+    }
+    */
 }
