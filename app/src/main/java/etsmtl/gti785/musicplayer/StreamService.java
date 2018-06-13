@@ -8,7 +8,7 @@ public class StreamService {
     OkHttpClient client;
     MainActivity mainActivity;
     String serverPort = "8765";
-    String serverIp = "192.168.0.111";
+    String serverIp = "192.168.0.108";
 //    String serverIp = "10.192.186.245";
  //   String serverIp = "192.168.43.75";
     String httpPrefix = "http://";

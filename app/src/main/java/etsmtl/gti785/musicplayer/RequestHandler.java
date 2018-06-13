@@ -16,7 +16,7 @@ import com.squareup.okhttp.Response;
 
 import bean.Song;
 
-public class RequestHandler extends AsyncTask<String, Void, JsonObject> {
+public class RequestHandler extends AsyncTask<String, Void, Song> {
 
     OkHttpClient client;
     MainActivity mainActivity;
@@ -28,7 +28,7 @@ public class RequestHandler extends AsyncTask<String, Void, JsonObject> {
 
     @Override
     // 0 request, 1 address, 2 operation
-    protected JsonObject doInBackground(String... objects) {
+    protected Song doInBackground(String... objects) {
 
         Response response = null;
         JsonObject jsonObject = new JsonObject();
@@ -40,38 +40,15 @@ public class RequestHandler extends AsyncTask<String, Void, JsonObject> {
 
         try {
             response = client.newCall(request).execute();
-
             if(response != null && response.isSuccessful()){
-                jsonObject = createJsonObjectFromResponse(response, operation, address);
-                if(jsonObject != null){
-                    return jsonObject;
-                }
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
-    }
 
-    public void onPostExecute(JsonObject response){
+                Song song = extractSong(response);
 
-        if(response != null){
-            try{
-                String operation = response.get("operation").getAsString();
-                String address = response.get("address").getAsString();
-                Song song = jsonDecode(response.get("song"));
-
-                // set current song for the next time we make a request
-                mainActivity.streamService.setCurrentSong(song.getTitle());
-
-                // http.192.168.../raw/songname
-                // operations de controle du player
                 if(song != null){
+                    mainActivity.streamService.setCurrentSong(song.getTitle());
+
                     if(operation == "initPlayer"){
-
                         initPlayer(address, song);
-
                     }
                     else if (operation == "nextSong"){
                         setNextSong();
@@ -82,14 +59,56 @@ public class RequestHandler extends AsyncTask<String, Void, JsonObject> {
                     else if (operation == "shuffleSong"){
                         shuffleNextSong();
                     }
+                    else{
+                        Toast.makeText(mainActivity.getBaseContext(),"Song is null",Toast.LENGTH_SHORT).show();
+                    }
+                    return song;
                 }
-            }catch(Exception e){
-                e.printStackTrace();
+                else{
+                    Toast.makeText(mainActivity.getBaseContext(),"Query Failed",Toast.LENGTH_SHORT).show();
+                    return null;
+                }
             }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
-        else{
-            Toast.makeText(mainActivity.getBaseContext(),"Query Failed",Toast.LENGTH_SHORT).show();
+        return null;
+    }
+
+    public void onPostExecute(Song song){
+
+        try{
+//            int duration = mainActivity.mediaPlayer.getDuration();
+            mainActivity.seekBar.setMax((Integer.parseInt(song.getDuration())/100));
+            String maxTimeString = mainActivity.createTimeLabel((Integer.parseInt(song.getDuration())/100));
+            mainActivity.textCurrentPosition.setText("0:00");
+
+    //        mainActivity.textMaxTime.setText(Integer.parseInt(song.getDuration()) / 100);
+    //       mainActivity.textMaxTime.setText(maxTimeString);
+//
+//            mainActivity.mediaPlayer.seekTo(0);
+//            mainActivity.mediaPlayer.setLooping(false); // par défaut
+//            mainActivity.mediaPlayer.setVolume(0.5f, 0.5f);
+
+//            mainActivity.mediaPlayer.start();
+
+        }catch(Exception e){
+            e.printStackTrace();
         }
+    }
+
+
+    public Song extractSong(Response response){
+        Gson gson = new GsonBuilder().create();
+        try{
+            String res = response.body().string();
+            Song song = gson.fromJson(res, Song.class);
+            return song;
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public Song jsonDecode(JsonElement response){
@@ -106,7 +125,6 @@ public class RequestHandler extends AsyncTask<String, Void, JsonObject> {
     public Request createRequest(String operation, String address, String currentSong){
 
         Request request;
-
         if(currentSong == ""){
             request = new Request.Builder()
                     .url(address + '/' + operation+"?"+"testing=yes")
@@ -119,7 +137,6 @@ public class RequestHandler extends AsyncTask<String, Void, JsonObject> {
         }
         return request;
     }
-
 
     public JsonObject createJsonObjectFromResponse(Response response, String operation, String address){
         // source: https://stackoaptuverflow.com/questions/28221555/how-does-okhttp-get-json-string
@@ -139,40 +156,41 @@ public class RequestHandler extends AsyncTask<String, Void, JsonObject> {
         return null;
     }
 
-
     public void initPlayer(String address, Song song){
         try{
-            mainActivity.songTitle.setText(song.getTitle());
 
-    //       String songUri = "file://" + address+"/raw/"+song.path+".mp3";
             String songUri = address+"/raw/"+song.path;
-//            String songUri = address+"/raw/"+song.path+".mp3";
-            Uri myUri = Uri.parse(songUri);
 
             mainActivity.mediaPlayer = null;
             mainActivity.mediaPlayer = new MediaPlayer();
             mainActivity.mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            // mainActivity.mediaPlayer = MediaPlayer.create(mainActivity.context(), myUri);
+            mainActivity.mediaPlayer.setDataSource(songUri);
+            mainActivity.mediaPlayer.prepareAsync();
 
-            // faire un contentprovider pour gérer l'URL ?
-//            ContentProvider contentProvider =
-
-            mainActivity.mediaPlayer.setDataSource(mainActivity.context, myUri);
-            mainActivity.mediaPlayer.prepare();
-
-            int duration = mainActivity.mediaPlayer.getDuration();
-            mainActivity.seekBar.setMax(duration);
-            String maxTimeString = mainActivity.createTimeLabel(duration);
-            mainActivity.textCurrentPosition.setText("0:00");
-
-            mainActivity.textMaxTime.setText(Integer.parseInt(song.getDuration()) / 100);
-    //       mainActivity.textMaxTime.setText(maxTimeString);
-
-            mainActivity.mediaPlayer.seekTo(0);
+            //mp3 will be started after completion of preparing...
+            mainActivity.mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer player) {
+                    mainActivity.mediaPlayer.start();
+                    mainActivity.mediaPlayer.seekTo(0);
             mainActivity.mediaPlayer.setLooping(false); // par défaut
             mainActivity.mediaPlayer.setVolume(0.5f, 0.5f);
+                }
+            });
 
-            mainActivity.mediaPlayer.start();
+//
+//            int duration = mainActivity.mediaPlayer.getDuration();
+//            mainActivity.seekBar.setMax(duration);
+//            String maxTimeString = mainActivity.createTimeLabel(duration);
+//            mainActivity.textCurrentPosition.setText("0:00");
+//
+//            mainActivity.textMaxTime.setText(Integer.parseInt(song.getDuration()) / 100);
+//    //       mainActivity.textMaxTime.setText(maxTimeString);
+//
+//            mainActivity.mediaPlayer.seekTo(0);
+//            mainActivity.mediaPlayer.setLooping(false); // par défaut
+//            mainActivity.mediaPlayer.setVolume(0.5f, 0.5f);
+
         }catch(Exception e){
             e.printStackTrace();
         }
