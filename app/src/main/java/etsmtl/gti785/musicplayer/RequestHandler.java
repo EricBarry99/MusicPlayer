@@ -13,7 +13,6 @@ import com.google.gson.JsonObject;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
-
 import bean.Song;
 
 public class RequestHandler extends AsyncTask<String, Void, Song> {
@@ -79,19 +78,21 @@ public class RequestHandler extends AsyncTask<String, Void, Song> {
     public void onPostExecute(Song song){
 
         try{
-//            int duration = mainActivity.mediaPlayer.getDuration();
-            mainActivity.seekBar.setMax((Integer.parseInt(song.getDuration())/100));
+
+            int duration = mainActivity.mediaPlayer.getDuration();
+
+            // @TODO null object ??
+//            mainActivity.seekBar.setMax((Integer.parseInt(song.getDuration())/100));
+
+            // @TODO arranger la duree de la chanson pour avoir le bon temps
             String maxTimeString = mainActivity.createTimeLabel((Integer.parseInt(song.getDuration())/100));
+            mainActivity.textMaxTime.setText(maxTimeString);
+//            mainActivity.textMaxTime.setText(Integer.parseInt(song.getDuration()) / 100);
+
+            mainActivity.mediaPlayer.seekTo(0);
             mainActivity.textCurrentPosition.setText("0:00");
-
-    //        mainActivity.textMaxTime.setText(Integer.parseInt(song.getDuration()) / 100);
-    //       mainActivity.textMaxTime.setText(maxTimeString);
-//
-//            mainActivity.mediaPlayer.seekTo(0);
-//            mainActivity.mediaPlayer.setLooping(false); // par défaut
-//            mainActivity.mediaPlayer.setVolume(0.5f, 0.5f);
-
-//            mainActivity.mediaPlayer.start();
+            mainActivity.mediaPlayer.setLooping(false); // par défaut
+            mainActivity.mediaPlayer.setVolume(0.5f, 0.5f);
 
         }catch(Exception e){
             e.printStackTrace();
@@ -159,56 +160,44 @@ public class RequestHandler extends AsyncTask<String, Void, Song> {
     public void initPlayer(String address, Song song){
         try{
 
-            String songUri = address+"/raw/"+song.path;
+            String songUri = address+"/raw/"+song.path+".mp3";
+            System.out.println(songUri);
+            Uri myUri = Uri.parse(songUri);
 
-            mainActivity.mediaPlayer = null;
             mainActivity.mediaPlayer = new MediaPlayer();
-            mainActivity.mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mainActivity.mediaPlayer.setDataSource(songUri);
+            mainActivity.mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mainActivity.mediaPlayer.prepareAsync();
 
-            //mp3 will be started after completion of preparing...
+//            //mp3 will be started after completion of preparing...
             mainActivity.mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer player) {
-                    mainActivity.mediaPlayer.start();
+                    player.start();
                     mainActivity.mediaPlayer.seekTo(0);
-            mainActivity.mediaPlayer.setLooping(false); // par défaut
-            mainActivity.mediaPlayer.setVolume(0.5f, 0.5f);
+                    mainActivity.mediaPlayer.setLooping(false); // par défaut
+                    mainActivity.mediaPlayer.setVolume(0.5f, 0.5f);
                 }
             });
 
-//
-//            int duration = mainActivity.mediaPlayer.getDuration();
-//            mainActivity.seekBar.setMax(duration);
-//            String maxTimeString = mainActivity.createTimeLabel(duration);
-//            mainActivity.textCurrentPosition.setText("0:00");
-//
-//            mainActivity.textMaxTime.setText(Integer.parseInt(song.getDuration()) / 100);
-//    //       mainActivity.textMaxTime.setText(maxTimeString);
-//
-//            mainActivity.mediaPlayer.seekTo(0);
-//            mainActivity.mediaPlayer.setLooping(false); // par défaut
-//            mainActivity.mediaPlayer.setVolume(0.5f, 0.5f);
+
 
         }catch(Exception e){
             e.printStackTrace();
         }
-    }
 
+    }
 
     public void setNextSong(){
-
+        Toast.makeText(mainActivity.getBaseContext(),"Playing Next Song",Toast.LENGTH_SHORT).show();
     }
-
 
     public void setPreviousSong(){
-
+        Toast.makeText(mainActivity.getBaseContext(),"Playing previous Song",Toast.LENGTH_SHORT).show();
     }
 
-
     public void shuffleNextSong(){
-
+        Toast.makeText(mainActivity.getBaseContext(),"Shuffling next Song",Toast.LENGTH_SHORT).show();
     }
 
 }

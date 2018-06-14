@@ -6,21 +6,17 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Response;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
-
 
 public class MainActivity extends AppCompatActivity {
 
@@ -69,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         this.btnRepeat= (Button) this.findViewById(R.id.btnRepeat);
         this.btnShuffle= (Button) this.findViewById(R.id.btnShuffle);
         this.btnShuffle.setEnabled(false);
+/*
 
         // Progress Bar
         this.seekBar= (SeekBar) this.findViewById(R.id.songProgressBar);
@@ -106,19 +103,8 @@ public class MainActivity extends AppCompatActivity {
                 public void onStopTrackingTouch(SeekBar seekBar) {}
             }
         );
-//        this.playList = listElemRaw();
 
-
-
-
-        if (android.os.Build.VERSION.SDK_INT > 9) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-                    .permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-        }
-
-
-        // @TODO: init player
+*/
         streamService.initPlayer();
 
 //
