@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         this.btnRepeat= (Button) this.findViewById(R.id.btnRepeat);
         this.btnShuffle= (Button) this.findViewById(R.id.btnShuffle);
         this.btnShuffle.setEnabled(false);
-/*
+
 
         // Progress Bar
         this.seekBar= (SeekBar) this.findViewById(R.id.songProgressBar);
@@ -104,25 +104,9 @@ public class MainActivity extends AppCompatActivity {
             }
         );
 
-*/
+
         streamService.initPlayer();
 
-//
-//        // ici le player est dans l'éetat prepared apres la methode create
-//        // on get la premiere chanson par defaut
-//        int resID = getResources().getIdentifier(this.playList.get(0), "raw", getPackageName());
-//        this.mediaPlayer =  MediaPlayer.create(this, resID);
-//
-/*
-        int duration = this.mediaPlayer.getDuration();
-        this.seekBar.setMax(duration);
-        String maxTimeString = this.createTimeLabel(duration);
-        this.textCurrentPosition.setText("0:00");
-        this.textMaxTime.setText(maxTimeString);
-        this.mediaPlayer.seekTo(0);
-        this.mediaPlayer.setLooping(false); // par défaut
-        this.mediaPlayer.setVolume(0.5f, 0.5f);
-        */
     }
 
     // Thread to Update position for SeekBar.
@@ -153,7 +137,6 @@ public class MainActivity extends AppCompatActivity {
         this.seekBar.setProgress(0);
         this.songTitle.setText("Song title : " + randSongID);
         this.mediaPlayer.start();
-
 
         streamService.shuffle();
     }

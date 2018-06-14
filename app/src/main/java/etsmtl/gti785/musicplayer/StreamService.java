@@ -35,7 +35,6 @@ public class StreamService {
     void initPlayer() {
         try {
             requestHandler = new RequestHandler(client, mainActivity);
-
             requestHandler.execute("initPlayer", getServerAdress(),"");
         } catch (Exception e) {
             System.out.println(e.getMessage());

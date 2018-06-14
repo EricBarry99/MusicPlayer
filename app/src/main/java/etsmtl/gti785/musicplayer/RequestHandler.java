@@ -5,11 +5,8 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.widget.Toast;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -30,12 +27,13 @@ public class RequestHandler extends AsyncTask<String, Void, Song> {
     protected Song doInBackground(String... objects) {
 
         Response response = null;
-        JsonObject jsonObject = new JsonObject();
 
         String operation = objects[0].toString();
         String address = objects[1].toString();
         String currentSong = objects[2].toString();
         Request request = createRequest(operation, address, currentSong);
+
+        System.out.println("CURRENT SONG IN REQUEST: " + currentSong);
 
         try {
             response = client.newCall(request).execute();
@@ -44,18 +42,16 @@ public class RequestHandler extends AsyncTask<String, Void, Song> {
                 Song song = extractSong(response);
 
                 if(song != null){
-                    mainActivity.streamService.setCurrentSong(song.getTitle());
-
-                    if(operation == "initPlayer"){
+                    if(operation.equals("initPlayer")){
                         initPlayer(address, song);
                     }
-                    else if (operation == "nextSong"){
+                    else if (operation.equals("nextSong")){
                         setNextSong();
                     }
-                    else if (operation == "previousSong"){
+                    else if (operation.equals("previousSong")){
                         setPreviousSong();
                     }
-                    else if (operation == "shuffleSong"){
+                    else if (operation.equals("shuffleSong")){
                         shuffleNextSong();
                     }
                     else{
@@ -76,46 +72,22 @@ public class RequestHandler extends AsyncTask<String, Void, Song> {
     }
 
     public void onPostExecute(Song song){
-
         try{
-
-            int duration = mainActivity.mediaPlayer.getDuration();
-
-            // @TODO null object ??
-//            mainActivity.seekBar.setMax((Integer.parseInt(song.getDuration())/100));
-
-            // @TODO arranger la duree de la chanson pour avoir le bon temps
-            String maxTimeString = mainActivity.createTimeLabel((Integer.parseInt(song.getDuration())/100));
+            String maxTimeString = mainActivity.createTimeLabel((Integer.parseInt(song.getDuration())));
             mainActivity.textMaxTime.setText(maxTimeString);
-//            mainActivity.textMaxTime.setText(Integer.parseInt(song.getDuration()) / 100);
-
-            mainActivity.mediaPlayer.seekTo(0);
             mainActivity.textCurrentPosition.setText("0:00");
-            mainActivity.mediaPlayer.setLooping(false); // par défaut
-            mainActivity.mediaPlayer.setVolume(0.5f, 0.5f);
+            mainActivity.songTitle.setText(song.getTitle());
 
         }catch(Exception e){
             e.printStackTrace();
         }
     }
-
 
     public Song extractSong(Response response){
         Gson gson = new GsonBuilder().create();
         try{
             String res = response.body().string();
             Song song = gson.fromJson(res, Song.class);
-            return song;
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public Song jsonDecode(JsonElement response){
-        Gson gson = new GsonBuilder().create();
-        try{
-            Song song = gson.fromJson(response.getAsString(), Song.class);
             return song;
         }catch(Exception e){
             e.printStackTrace();
@@ -139,29 +111,11 @@ public class RequestHandler extends AsyncTask<String, Void, Song> {
         return request;
     }
 
-    public JsonObject createJsonObjectFromResponse(Response response, String operation, String address){
-        // source: https://stackoaptuverflow.com/questions/28221555/how-does-okhttp-get-json-string
-        //https://stackoverflow.com/questions/28405545/strange-namevaluepairs-key-appear-when-using-gson?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
-        try{
-            String jsonData = response.body().string();
-
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("song", jsonData);
-            jsonObject.addProperty("operation", operation);
-            jsonObject.addProperty("address", address);
-
-            return jsonObject;
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     public void initPlayer(String address, Song song){
         try{
 
+
             String songUri = address+"/raw/"+song.path+".mp3";
-            System.out.println(songUri);
             Uri myUri = Uri.parse(songUri);
 
             mainActivity.mediaPlayer = new MediaPlayer();
@@ -169,23 +123,22 @@ public class RequestHandler extends AsyncTask<String, Void, Song> {
             mainActivity.mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mainActivity.mediaPlayer.prepareAsync();
 
-//            //mp3 will be started after completion of preparing...
+            //mp3 will be started after completion of preparing...
             mainActivity.mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer player) {
-                    player.start();
                     mainActivity.mediaPlayer.seekTo(0);
                     mainActivity.mediaPlayer.setLooping(false); // par défaut
                     mainActivity.mediaPlayer.setVolume(0.5f, 0.5f);
+                    player.start();
                 }
             });
 
-
+            mainActivity.streamService.setCurrentSong(song.getTitle());
 
         }catch(Exception e){
             e.printStackTrace();
         }
-
     }
 
     public void setNextSong(){
@@ -199,5 +152,4 @@ public class RequestHandler extends AsyncTask<String, Void, Song> {
     public void shuffleNextSong(){
         Toast.makeText(mainActivity.getBaseContext(),"Shuffling next Song",Toast.LENGTH_SHORT).show();
     }
-
 }
