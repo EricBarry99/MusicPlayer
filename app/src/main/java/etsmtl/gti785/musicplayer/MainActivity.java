@@ -3,7 +3,6 @@ package etsmtl.gti785.musicplayer;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,8 +35,8 @@ public class MainActivity extends AppCompatActivity {
     MediaPlayer mediaPlayer;
     UpdateSeekBarThread updateSeekBarThread;
     String IP,PORT;
+    ProgressDialog progDailog;
     ImageView coverArt;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +68,6 @@ public class MainActivity extends AppCompatActivity {
         this.btnShuffle= (Button) this.findViewById(R.id.btnShuffle);
         this.coverArt= (ImageView) this.findViewById(R.id.coverArt);
         this.btnShuffle.setEnabled(false);
-
-
 
         // Progress Bar
         this.seekBar= (SeekBar) this.findViewById(R.id.songProgressBar);
@@ -113,8 +110,17 @@ public class MainActivity extends AppCompatActivity {
 
     // Thread to Update position for SeekBar.
     class UpdateSeekBarThread implements Runnable {
-        public void run()  {
-            int currentPosition = mediaPlayer.getCurrentPosition();
+        public void run() {
+
+            int currentPosition;
+
+            try {
+                currentPosition = mediaPlayer.getCurrentPosition();
+                // Delay thread 50 milisecond.
+            } catch (Exception e) {
+                e.printStackTrace();
+                currentPosition = 0;
+            }
             String currentPositionStr = createTimeLabel(currentPosition);
             textCurrentPosition.setText(currentPositionStr);
             seekBar.setProgress(currentPosition);

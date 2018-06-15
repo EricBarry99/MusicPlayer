@@ -1,9 +1,11 @@
 package etsmtl.gti785.musicplayer;
 
+import android.app.ProgressDialog;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -69,7 +71,7 @@ public class RequestHandler extends AsyncTask<String, Void, Song> {
             String maxTimeString = mainActivity.createTimeLabel((Integer.parseInt(song.getDuration())));
             mainActivity.textMaxTime.setText(maxTimeString);
             mainActivity.textCurrentPosition.setText("0:00");
-            mainActivity.songTitle.setText(song.getTitle());
+            mainActivity.songTitle.setText(song.getArtist() +" - "+song.getTitle());
             mainActivity.coverArt.setImageBitmap(song.getImage());
         }catch(Exception e){
             e.printStackTrace();
@@ -85,7 +87,6 @@ public class RequestHandler extends AsyncTask<String, Void, Song> {
                 mainActivity.mediaPlayer.stop();
                 mainActivity.mediaPlayer.release();
             }
-
             mainActivity.mediaPlayer = new MediaPlayer();
             mainActivity.mediaPlayer.setDataSource(songUri);
             mainActivity.mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -95,9 +96,9 @@ public class RequestHandler extends AsyncTask<String, Void, Song> {
             mainActivity.mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer player) {
-                    mainActivity.mediaPlayer.seekTo(0);
-                    mainActivity.mediaPlayer.setLooping(false); // par défaut
-                    mainActivity.mediaPlayer.setVolume(0.5f, 0.5f);
+                    player.seekTo(0);
+                    player.setLooping(false); // par défaut
+                    player.setVolume(0.5f, 0.5f);
                     player.start();
                 }
             });

@@ -1,5 +1,7 @@
 package etsmtl.gti785.musicplayer;
 
+import android.os.Handler;
+
 import com.squareup.okhttp.OkHttpClient;
 
 public class StreamService {
@@ -42,6 +44,7 @@ public class StreamService {
 
     void initPlayer() {
         try {
+
             requestHandler = new RequestHandler(client, mainActivity);
             requestHandler.execute("initPlayer", getServerAdress(),"");
         } catch (Exception e) {
@@ -53,6 +56,7 @@ public class StreamService {
         try {
             requestHandler = new RequestHandler(client, mainActivity);
             requestHandler.execute("nextSong", getServerAdress(), getCurrentSong());
+//            mainActivity.mediaPlayer.start();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
