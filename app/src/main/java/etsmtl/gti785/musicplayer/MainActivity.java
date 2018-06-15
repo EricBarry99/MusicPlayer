@@ -17,7 +17,6 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Response;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     MediaPlayer mediaPlayer;
     UpdateSeekBarThread updateSeekBarThread;
     String IP,PORT;
-    ProgressDialog progDailog;
+    ProgressDialog progressDialog;
     ImageView coverArt;
 
     @Override
@@ -45,13 +44,14 @@ public class MainActivity extends AppCompatActivity {
         context = getApplicationContext();
         client = new OkHttpClient();
 
+        this.progressDialog = ProgressDialog.show(this,"Please wait ...","Retrieving data ...",true);
+
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
             IP = bundle.getString("IPADRESS");
             PORT = bundle.getString("PORTADRESS");
+            streamService = new StreamService(client, this, PORT, IP);
         }
-
-        streamService = new StreamService(client, this);
 
         updateSeekBarThread= new UpdateSeekBarThread();
         this.songTitle = findViewById(R.id.songTitle);
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         this.btnRepeat= (Button) this.findViewById(R.id.btnRepeat);
         this.btnShuffle= (Button) this.findViewById(R.id.btnShuffle);
         this.coverArt= (ImageView) this.findViewById(R.id.coverArt);
-        this.btnShuffle.setEnabled(false);
+        this.btnShuffle.setEnabled(true);
 
         // Progress Bar
         this.seekBar= (SeekBar) this.findViewById(R.id.songProgressBar);
@@ -130,40 +130,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void doShuffle(View view) {
-        this.updateSeekBarThread= new UpdateSeekBarThread();
-        this.threadHandler.postDelayed(updateSeekBarThread,50);
-        this.mediaPlayer.stop();
-        this.mediaPlayer.reset();
-        String randSongID = playList.get(new Random().nextInt(playList.size()));
-        int resID = getResources().getIdentifier(randSongID, "raw", getPackageName());
-        this.mediaPlayer =  MediaPlayer.create(this, resID);
-        int duration = this.mediaPlayer.getDuration();
-        this.seekBar.setMax(duration);
-        String maxTimeString = this.createTimeLabel(duration);
-        this.textMaxTime.setText(maxTimeString);
-        this.textCurrentPosition.setText("0:00");
-        this.seekBar.setProgress(0);
-        this.songTitle.setText("Song title : " + randSongID);
-        this.mediaPlayer.start();
-
         streamService.shuffle();
     }
 
     // Fonction executer sur btn PLAY
     public void doStart(View view)  {
 
-       this.mediaPlayer.start();
+        this.mediaPlayer.start();
         threadHandler.postDelayed(updateSeekBarThread,50);
         this.btnShuffle.setEnabled(true);
-//        this.songTitle.setText("Song title : " + playList.get(0));
         this.buttonStart.setVisibility(View.GONE);
         this.buttonPause.setVisibility(View.VISIBLE);
-
-        // TODO : faire marcher le loading
-        //https://stackoverflow.com/questions/5859702/android-loading-animation-before-videoview-start
-       //  progDailog = ProgressDialog.show(this, "Please wait ...", "Retrieving data ...", true);
-        // TO STOP
-        //progDailog.dismiss();
     }
 
     // pour remplacer la fonction douteuse originale
@@ -244,6 +221,7 @@ public class MainActivity extends AppCompatActivity {
         text = "DISCONNECTED FROM SERVER";
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
+        mediaPlayer.stop();
+        mediaPlayer.release();
     }
-
 }

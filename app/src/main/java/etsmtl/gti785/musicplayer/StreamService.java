@@ -1,7 +1,5 @@
 package etsmtl.gti785.musicplayer;
 
-import android.os.Handler;
-
 import com.squareup.okhttp.OkHttpClient;
 
 public class StreamService {
@@ -10,16 +8,16 @@ public class StreamService {
     MainActivity mainActivity;
     String serverPort = "8765";
     String serverIp = "192.168.43.75";
-//    String serverIp = "192.168.0.111";
     String httpPrefix = "http://";
     RequestHandler requestHandler;
     String currentSong = "";
     String currentFileName = "";
 
-
-    public StreamService(OkHttpClient client, MainActivity mainActivity) {
+    public StreamService(OkHttpClient client, MainActivity mainActivity, String serverPort, String serverIp) {
         this.client = client;
         this.mainActivity = mainActivity;
+        this.serverPort = serverPort;
+        this.serverIp = serverIp;
     }
 
     public String getCurrentFileName() {
@@ -44,7 +42,6 @@ public class StreamService {
 
     void initPlayer() {
         try {
-
             requestHandler = new RequestHandler(client, mainActivity);
             requestHandler.execute("initPlayer", getServerAdress(),"");
         } catch (Exception e) {
@@ -56,7 +53,6 @@ public class StreamService {
         try {
             requestHandler = new RequestHandler(client, mainActivity);
             requestHandler.execute("nextSong", getServerAdress(), getCurrentSong());
-//            mainActivity.mediaPlayer.start();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

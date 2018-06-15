@@ -1,12 +1,9 @@
 package etsmtl.gti785.musicplayer;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,8 +22,6 @@ public class ServerConfigActivity extends AppCompatActivity {
 
     private Pattern pattern, pattern2;
     private Matcher matcher, matcher2;
-
-
 
     //Source : https://www.mkyong.com/regular-expressions/how-to-validate-ip-address-with-regular-expression/
     private static final String IPADDRESS_PATTERN =

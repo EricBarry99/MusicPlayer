@@ -1,11 +1,9 @@
 package etsmtl.gti785.musicplayer;
 
-import android.app.ProgressDialog;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Handler;
+import android.view.View;
 import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -23,16 +21,6 @@ public class RequestHandler extends AsyncTask<String, Void, Song> {
         this.client = client;
         this.mainActivity = mainActivity;
     }
-
-    /*
-    @TODO:
-    - le temps actuel de la chanson ne s'affiche pas dans le ui
-    - faire l'avancement de la barre de progression dans le ui
-    - gerer l'affichage de l'image des chansons
-    - replace les boutons repeat et shuffle pour les avoir au bon endroit
-    - faire marcher le bouton play-pause
-    -  mettre un truc d'attente entre le temps ou la personne se connecte et le temps ou la chanson joue
-     */
 
     @Override
     // 0 request, 1 address, 2 operation
@@ -68,6 +56,9 @@ public class RequestHandler extends AsyncTask<String, Void, Song> {
 
     public void onPostExecute(Song song){
         try{
+            this.mainActivity.buttonStart.setVisibility(View.GONE);
+            this.mainActivity.buttonPause.setVisibility(View.VISIBLE);
+
             String maxTimeString = mainActivity.createTimeLabel((Integer.parseInt(song.getDuration())));
             mainActivity.textMaxTime.setText(maxTimeString);
             mainActivity.textCurrentPosition.setText("0:00");
@@ -100,6 +91,7 @@ public class RequestHandler extends AsyncTask<String, Void, Song> {
                     player.setLooping(false); // par défaut
                     player.setVolume(0.5f, 0.5f);
                     player.start();
+                    mainActivity.progressDialog.dismiss();
                 }
             });
 

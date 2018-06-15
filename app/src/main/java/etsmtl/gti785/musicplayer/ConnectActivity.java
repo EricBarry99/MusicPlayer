@@ -1,16 +1,12 @@
 package etsmtl.gti785.musicplayer;
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
-
 
 public class ConnectActivity extends AppCompatActivity{
 
@@ -31,11 +27,14 @@ public class ConnectActivity extends AppCompatActivity{
 
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
-
             if(bundle.getString("IPADRESS") != null && bundle.getString("PORTADRESS") != null){
                 IP = bundle.getString("IPADRESS");
                 PORT = bundle.getString("PORTADRESS");
             }
+        }
+        else{
+            IP = "192.168.43.75";
+            PORT = "8765";
         }
     }
 
