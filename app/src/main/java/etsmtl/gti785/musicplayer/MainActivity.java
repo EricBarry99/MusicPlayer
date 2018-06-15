@@ -103,10 +103,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onStopTrackingTouch(SeekBar seekBar) {}
             }
         );
-
-
         streamService.initPlayer();
-
     }
 
     // Thread to Update position for SeekBar.
@@ -151,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
         this.buttonStart.setVisibility(View.GONE);
         this.buttonPause.setVisibility(View.VISIBLE);
 
+        // TODO : faire marcher le loading
         //https://stackoverflow.com/questions/5859702/android-loading-animation-before-videoview-start
        //  progDailog = ProgressDialog.show(this, "Please wait ...", "Retrieving data ...", true);
         // TO STOP

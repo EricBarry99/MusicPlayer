@@ -27,13 +27,10 @@ public class RequestHandler extends AsyncTask<String, Void, Song> {
     protected Song doInBackground(String... objects) {
 
         Response response = null;
-
         String operation = objects[0].toString();
         String address = objects[1].toString();
         String currentSong = objects[2].toString();
         Request request = createRequest(operation, address, currentSong);
-
-        System.out.println("CURRENT SONG IN REQUEST: " + currentSong);
 
         try {
             response = client.newCall(request).execute();
@@ -42,21 +39,7 @@ public class RequestHandler extends AsyncTask<String, Void, Song> {
                 Song song = extractSong(response);
 
                 if(song != null){
-                    if(operation.equals("initPlayer")){
-                        initPlayer(address, song);
-                    }
-                    else if (operation.equals("nextSong")){
-                        setNextSong();
-                    }
-                    else if (operation.equals("previousSong")){
-                        setPreviousSong();
-                    }
-                    else if (operation.equals("shuffleSong")){
-                        shuffleNextSong();
-                    }
-                    else{
-                        Toast.makeText(mainActivity.getBaseContext(),"Song is null",Toast.LENGTH_SHORT).show();
-                    }
+                    initPlayer(address, song);
                     return song;
                 }
                 else{
@@ -83,40 +66,15 @@ public class RequestHandler extends AsyncTask<String, Void, Song> {
         }
     }
 
-    public Song extractSong(Response response){
-        Gson gson = new GsonBuilder().create();
-        try{
-            String res = response.body().string();
-            Song song = gson.fromJson(res, Song.class);
-            return song;
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public Request createRequest(String operation, String address, String currentSong){
-
-        Request request;
-        if(currentSong == ""){
-            request = new Request.Builder()
-                    .url(address + '/' + operation+"?"+"testing=yes")
-                    .build();
-        }
-        else{
-            request = new Request.Builder()
-                    .url(address + '/' + operation+"?" + "song="+currentSong)
-                    .build();
-        }
-        return request;
-    }
-
     public void initPlayer(String address, Song song){
         try{
-
-
             String songUri = address+"/raw/"+song.path+".mp3";
-            Uri myUri = Uri.parse(songUri);
+
+            // fermer le vieux mediaplayer pour eviter deux chansons en meme temps
+            if(mainActivity.mediaPlayer != null){
+                mainActivity.mediaPlayer.stop();
+                mainActivity.mediaPlayer.release();
+            }
 
             mainActivity.mediaPlayer = new MediaPlayer();
             mainActivity.mediaPlayer.setDataSource(songUri);
@@ -135,21 +93,38 @@ public class RequestHandler extends AsyncTask<String, Void, Song> {
             });
 
             mainActivity.streamService.setCurrentSong(song.getTitle());
+            mainActivity.streamService.setCurrentFileName(song.getPath());
 
         }catch(Exception e){
             e.printStackTrace();
         }
     }
 
-    public void setNextSong(){
-        Toast.makeText(mainActivity.getBaseContext(),"Playing Next Song",Toast.LENGTH_SHORT).show();
+    public Song extractSong(Response response){
+        Gson gson = new GsonBuilder().create();
+        try{
+            String res = response.body().string();
+            Song song = gson.fromJson(res, Song.class);
+            return song;
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public void setPreviousSong(){
-        Toast.makeText(mainActivity.getBaseContext(),"Playing previous Song",Toast.LENGTH_SHORT).show();
-    }
+    public Request createRequest(String operation, String address, String currentSong){
 
-    public void shuffleNextSong(){
-        Toast.makeText(mainActivity.getBaseContext(),"Shuffling next Song",Toast.LENGTH_SHORT).show();
+        Request request;
+        if(currentSong == ""){
+            request = new Request.Builder()
+                    .url(address + '/' + operation)
+                    .build();
+        }
+        else{
+            request = new Request.Builder()
+                    .url(address + '/' + operation+"?" + "song="+currentSong)
+                    .build();
+        }
+        return request;
     }
 }

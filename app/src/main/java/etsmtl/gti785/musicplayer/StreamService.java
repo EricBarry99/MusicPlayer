@@ -8,16 +8,23 @@ public class StreamService {
     MainActivity mainActivity;
     String serverPort = "8765";
     String serverIp = "192.168.0.111";
-//    String serverIp = "10.192.186.245";
- //   String serverIp = "192.168.43.75";
     String httpPrefix = "http://";
     RequestHandler requestHandler;
     String currentSong = "";
+    String currentFileName = "";
 
 
     public StreamService(OkHttpClient client, MainActivity mainActivity) {
         this.client = client;
         this.mainActivity = mainActivity;
+    }
+
+    public String getCurrentFileName() {
+        return currentFileName;
+    }
+
+    public void setCurrentFileName(String currentFileName) {
+        this.currentFileName = currentFileName;
     }
 
     public void setCurrentSong(String currentSong) {
