@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         context = getApplicationContext();
         client = new OkHttpClient();
 
+        // source: https://stackoverflow.com/questions/5859702/android-loading-animation-before-videoview-start
         this.progressDialog = ProgressDialog.show(this,"Please wait ...","Retrieving data ...",true);
 
         Bundle bundle = getIntent().getExtras();

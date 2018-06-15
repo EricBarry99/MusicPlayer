@@ -19,9 +19,6 @@ public class Song {
     }
 
     public Song(String title, String artist, String album, String albumArt, String duration, String path) {
-
-//        byte[] albumArtByteArray = albumArt.getBytes();
-
         this.title = title;
         this.artist = artist;
         this.album = album;
@@ -29,7 +26,6 @@ public class Song {
         this.duration = duration;
         this.path = path;
     }
-
 
     public String getTitle() {
         return title;
@@ -79,6 +75,7 @@ public class Song {
         this.path = path;
     }
 
+    //source: https://stackoverflow.com/questions/13854742/byte-array-of-image-into-imageview
     public Bitmap getImage() {
         byte[] imageBytes = Base64.decode(this.albumArt,0);
         return  BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);

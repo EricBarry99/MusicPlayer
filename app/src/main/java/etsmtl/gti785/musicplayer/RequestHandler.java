@@ -83,7 +83,7 @@ public class RequestHandler extends AsyncTask<String, Void, Song> {
             mainActivity.mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mainActivity.mediaPlayer.prepareAsync();
 
-            //mp3 will be started after completion of preparing...
+            //https://stackoverflow.com/questions/15516469/android-media-player-start-called-in-state-4-error-38-0
             mainActivity.mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer player) {
