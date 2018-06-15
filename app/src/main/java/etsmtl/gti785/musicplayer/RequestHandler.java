@@ -22,6 +22,15 @@ public class RequestHandler extends AsyncTask<String, Void, Song> {
         this.mainActivity = mainActivity;
     }
 
+    /*
+    @TODO:
+    - le temps actuel de la chanson ne s'affiche pas dans le ui
+    - faire l'avancement de la barre de progression dans le ui
+    - gerer l'affichage de l'image des chansons
+    - replace les boutons repeat et shuffle pour les avoir au bon endroit
+    - faire marcher le bouton play-pause
+     */
+
     @Override
     // 0 request, 1 address, 2 operation
     protected Song doInBackground(String... objects) {
