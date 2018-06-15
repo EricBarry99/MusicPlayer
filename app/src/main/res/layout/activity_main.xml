@@ -11,18 +11,19 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:orientation="horizontal"
-        android:layout_alignParentLeft="true">
+        android:layout_alignParentEnd="true">
 
         <TextView
             android:id="@+id/songTitle"
-            android:layout_width="271dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_weight="1"
-            android:paddingLeft="10dp"
-            android:text="Please turn on MediaPlayer"
+            android:paddingStart="10dp"
+            android:paddingEnd="0dp"
+            android:text="@string/please"
             android:textColor="#000"
-            android:textSize="16dp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <Button
@@ -159,7 +160,6 @@
         android:layout_below="@+id/textView6"
         android:layout_marginTop="-100dp"
         android:orientation="horizontal">
-
     </LinearLayout>
 
     <TextView
@@ -168,8 +168,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="180dp"
-        android:layout_marginStart="10dp"
-        android:text="Current position" />
+        android:layout_marginStart="10dp" />
 
     <TextView
         android:id="@+id/textView_maxTime"
@@ -177,8 +176,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/textView_currentPosition"
-        android:text="Max Time"
-        android:layout_marginEnd="10dp"/>
+        android:layout_marginEnd="10dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -187,7 +185,7 @@
         android:layout_alignParentStart="true"
         android:layout_marginBottom="198dp"
         android:gravity="center_horizontal"
-        android:layout_alignParentLeft="true">
+        android:layout_alignParentEnd="true">
 
 
         <Button
