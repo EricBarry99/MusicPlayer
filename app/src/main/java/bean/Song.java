@@ -1,6 +1,10 @@
 package bean;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+
+import java.nio.charset.StandardCharsets;
 
 public class Song {
 
@@ -73,5 +77,10 @@ public class Song {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public Bitmap getImage() {
+        byte[] imageBytes = Base64.decode(this.albumArt,0);
+        return  BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
     }
 }

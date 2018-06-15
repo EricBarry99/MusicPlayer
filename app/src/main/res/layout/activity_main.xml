@@ -48,6 +48,7 @@
         android:paddingTop="10dp">
 
         <ImageView
+            android:id="@+id/coverArt"
             android:layout_width="279dp"
             android:layout_height="220dp"
             android:src="@drawable/image" />
@@ -150,7 +151,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="160dp"
+        android:layout_marginBottom="150dp"
         android:paddingLeft="6dp"
         android:paddingRight="6dp" />
 
@@ -183,10 +184,9 @@
         android:layout_height="53dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="198dp"
+        android:layout_marginBottom="168dp"
         android:gravity="center_horizontal"
         android:layout_alignParentEnd="true">
-
 
         <Button
             android:id="@+id/btnRepeat"

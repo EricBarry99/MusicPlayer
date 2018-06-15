@@ -29,6 +29,7 @@ public class RequestHandler extends AsyncTask<String, Void, Song> {
     - gerer l'affichage de l'image des chansons
     - replace les boutons repeat et shuffle pour les avoir au bon endroit
     - faire marcher le bouton play-pause
+    -  mettre un truc d'attente entre le temps ou la personne se connecte et le temps ou la chanson joue
      */
 
     @Override
@@ -69,7 +70,7 @@ public class RequestHandler extends AsyncTask<String, Void, Song> {
             mainActivity.textMaxTime.setText(maxTimeString);
             mainActivity.textCurrentPosition.setText("0:00");
             mainActivity.songTitle.setText(song.getTitle());
-
+            mainActivity.coverArt.setImageBitmap(song.getImage());
         }catch(Exception e){
             e.printStackTrace();
         }
